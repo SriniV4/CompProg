@@ -1,3 +1,3 @@
 # CompProg
 
-Solutions to competitive programming problems solved in summer 2026
+Solutions to competitive programming problems solved starting summer 2026
