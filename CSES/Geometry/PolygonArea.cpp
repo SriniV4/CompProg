@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <memory>
 typedef long long ll;
 typedef long double ld;
 typedef unsigned long long ull;
@@ -70,41 +71,21 @@ ll cross(const Point& a, const Point& b, const Point& c) {
 }
 istream& operator>>(istream& in, Point& p) { return in >> p.x >> p.y; }
 ostream& operator<<(ostream& out, const Point& p) { return out << p.x << " " << p.y; }
-
 int n;
-Point arr[4];
+const int MAXN = 1000;
+Point arr[MAXN];
 void solve(){
-    for(int i =0 ;i<4;i++)cin >> arr[i];
-    // check if ab splits cd
-    ll c = cross(arr[0] , arr[1] , arr[2]) , d = cross(arr[0] , arr[1] , arr[3]);
-    if(!(c||d)){
-        // on same line
-        if(arr[0].x == arr[1].x){
-            for(int i = 0;i<4;i++)swap(arr[i].x , arr[i].y);
-        }
-        int mn1 = min(arr[0].x , arr[1].x) , mx1 = max(arr[0].x , arr[1].x);
-        int mn2 = min(arr[2].x , arr[3].x) , mx2 = max(arr[2].x , arr[3].x);
-        if(max(mn1 , mn2) <= min(mx1 , mx2)){
-            cout << "YES\n";
-        } else cout << "NO\n";
-        return;
-    }
-    if(c && d && (c>0) == (d>0)){
-        cout << "NO\n";
-        return;
-    }
-    ll a = cross(arr[2] , arr[3] , arr[0]) , b = cross(arr[2] , arr[3] , arr[1]);
-    if(a && b && (a>=0) == (b>=0)){
-        cout << "NO\n";
-        return;
-    }
-    cout << "YES\n";
+    cin >> n;
+    for(int i = 0;i<n;i++)cin >> arr[i];
+    ll ans =0 ;
+    for(int i = 0;i<n;i++)ans += cross({0 , 0} , arr[i] , arr[(i+1)%n]);
+    cout << abs(ans) << "\n";
 }
 
 int main(){
     setIO();
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while(t--){
         solve();
     }

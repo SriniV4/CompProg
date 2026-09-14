@@ -70,41 +70,47 @@ ll cross(const Point& a, const Point& b, const Point& c) {
 }
 istream& operator>>(istream& in, Point& p) { return in >> p.x >> p.y; }
 ostream& operator<<(ostream& out, const Point& p) { return out << p.x << " " << p.y; }
-
-int n;
-Point arr[4];
+int n , m;
+const int MAXN = 1000;
+Point pol[MAXN];
 void solve(){
-    for(int i =0 ;i<4;i++)cin >> arr[i];
-    // check if ab splits cd
-    ll c = cross(arr[0] , arr[1] , arr[2]) , d = cross(arr[0] , arr[1] , arr[3]);
-    if(!(c||d)){
-        // on same line
-        if(arr[0].x == arr[1].x){
-            for(int i = 0;i<4;i++)swap(arr[i].x , arr[i].y);
+    cin >> n >> m;
+    for(int i =0 ;i<n;i++){
+        cin >> pol[i];
+    }
+    for(int i = 0;i<m;i++){
+        Point p;
+        cin >> p;
+        Point pT = {p.x+1 , p.y};
+        bool done = 0;
+        int cnt = 0;
+        for(int j = 0;j<n;j++){
+            Point p1 = pol[j] , p2 = pol[(j+1)%n];
+            ll c1 = cross(p ,pT , p1) , c2 = cross(p , pT , p2);
+            ll c = cross(p1 , p2 , p);
+            if(c == 0){
+                int val = (p1.x == p2.x?min(p1.y , p2.y):min(p1.x , p2.x));
+                int val2 = (p1.x == p2.x?max(p1.y , p2.y):max(p1.x , p2.x));
+                int val3 = (p1.x == p2.x?p.y:p.x);
+                if(val <= val3 && val3 <= val2){
+                    done = 1;
+                    cout << "BOUNDARY\n";
+                    break;
+                }
+            }
+            if((c1 <0) != (c2 < 0)){
+                ll dy = p1.y - p2.y;
+                if((dy >= 0 && c<0) || (dy <=0 && c>0))cnt^=1;
+            }
         }
-        int mn1 = min(arr[0].x , arr[1].x) , mx1 = max(arr[0].x , arr[1].x);
-        int mn2 = min(arr[2].x , arr[3].x) , mx2 = max(arr[2].x , arr[3].x);
-        if(max(mn1 , mn2) <= min(mx1 , mx2)){
-            cout << "YES\n";
-        } else cout << "NO\n";
-        return;
+        if(!done)cout << (cnt?"INSIDE\n":"OUTSIDE\n");
     }
-    if(c && d && (c>0) == (d>0)){
-        cout << "NO\n";
-        return;
-    }
-    ll a = cross(arr[2] , arr[3] , arr[0]) , b = cross(arr[2] , arr[3] , arr[1]);
-    if(a && b && (a>=0) == (b>=0)){
-        cout << "NO\n";
-        return;
-    }
-    cout << "YES\n";
 }
 
 int main(){
     setIO();
     int t = 1;
-    cin >> t;
+    //cin >> t;
     while(t--){
         solve();
     }
