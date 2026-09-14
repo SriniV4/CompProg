@@ -56,51 +56,59 @@ void solve(){
         return (a.f - b.f) * (a.f - b.f) + (a.s - b.s) * (a.s - b.s);
     };
     cin >> n;
+	if(n==0)exit(0);
     // return;
+	set<pi> seen;
     vector<pi> points;
     int x = INT_MAX , y = INT_MAX;
     for(int i = 0;i<n;i++){
         int a , b;
         cin >> a >> b;
+		if(seen.count({a, b}))continue;
+		seen.insert({a ,b});
         if(x == INT_MAX)x= a , y = b;
         else {
             if(b < y || (b==y && a < x))points.pb({x , y}) , x = a , y = b;
             else points.pb({a , b});
         }
     }
+	if(sz(points)==0){
+		cout << 1 << "\n" << x << " " << y << "\n";
+		return;
+	}
     sort(all(points) , [&](auto& a , auto& b){
         auto exp = cross({x , y} , a , b);
         if(exp)
             return exp>0;
         return d2(a, {x , y}) < d2(b , {x , y});
     });
-	int last = sz(points)-1;
-	while(last>=0 && cross({x , y} , points[last] , points[sz(points)-1]) == 0)last--;
-	reverse(points.begin() + last + 1, points.end());
     stack<pi> p;
     p.push({x , y}) , p.push(points[0]);
     for(int i = 1;i<sz(points);i++){
-        while(1){
+        while(sz(p)>=2){
             auto top = p.top();
             p.pop();
             auto sec = p.top();
-            if(cross(sec , top , points[i]) >= 0){
+            if(cross(sec , top , points[i]) > 0){
                 p.push(top);
                 break;
             }
         }
         p.push(points[i]);
     }
-    cout << sz(p) << "\n";
-    while(sz(p))cout << p.top().f << " " << p.top().s << "\n" , p.pop();
+	vector<pi> ans;
+    while(sz(p))ans.pb(p.top()), p.pop();
+	reverse(all(ans));
+    cout << sz(ans) << "\n";
+	for(auto& d : ans)cout << d.f << " " << d.s << "\n";
 } 
 
 int main(){
     setIO();
-    int t = 1;
-    //cin >> t;
+    int t = INT_MAX;
     while(t--){
         solve();
     }
 }
+
 
